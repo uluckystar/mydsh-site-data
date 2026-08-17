@@ -1,1 +1,1 @@
-{"blocked": [{"full_name": "sandbaseai/sandbase-harness", "blocked_at": "2026-08-17T12:14:25.514252+00:00", "reason": "仓库及API访问受限，无法完成代码核验，验证前不要安装"}]}
+{"blocked": [{"full_name": "sandbaseai/sandbase-harness", "blocked_at": "2026-08-17T12:14:25.514252+00:00", "reason": "仓库及API访问受限，无法完成代码核验，验证前不要安装"}, {"full_name": "yjh051108/dsh-super-injector", "blocked_at": "2026-08-17T13:40:35.001242+00:00", "reason": "存在持久化任意代码执行、未鉴权管理接口与路径越界，当前版本不要安装。"}, {"full_name": "NanmiCoder/dsh-auto-mode", "blocked_at": "2026-08-17T13:41:34.475824+00:00", "reason": "Auto 实际启用全盘权限且与文档矛盾，修复前不要使用。"}]}
