@@ -1,1 +1,1 @@
-{"blocked": [{"full_name": "sandbaseai/sandbase-harness", "blocked_at": "2026-08-17T12:14:25.514252+00:00", "reason": "仓库及API访问受限，无法完成代码核验，验证前不要安装"}]}
+{"blocked": [{"full_name": "sandbaseai/sandbase-harness", "blocked_at": "2026-08-17T12:14:25.514252+00:00", "reason": "仓库及API访问受限，无法完成代码核验，验证前不要安装"}, {"full_name": "omdsh-dev/dsh-at-file", "blocked_at": "2026-08-17T12:22:58.599793+00:00", "reason": "发布产物与源码严重不一致，现有安装包可越界读取并外发本机文件"}]}
