@@ -1626,6 +1626,90 @@
     },
     {
       "full_name": "vlln/dsh-navbar",
+      "report_id": "35eb0756d7f034cd3a472267c05a6fd1148d3f1576b248968040b14c79193f19",
+      "report_schema": 2,
+      "source_commit": "e53adfc8c837ebcb4b6a52c2c4baf7cb6e8b795e",
+      "snapshot_sha256": "e7e58e2e0fb3c7741f690b5306c38d19ed109a6d6a24614fc801ad6daec41dc0",
+      "branch": "main",
+      "updated_at": "2026-09-10T06:24:36Z",
+      "reviewed_at": "2026-10-21T08:41:12.022310+00:00",
+      "review_status": "complete",
+      "review_type": "maintainer_confirmed_static_source",
+      "scope": "fixed-commit static source only; no tools, execution, install, dependency advisory or runtime certification",
+      "coverage": {
+        "total_blobs": 14,
+        "reviewed_text_files": 13,
+        "reviewed_text_bytes": 120059,
+        "unreviewed": [
+          {
+            "path": "docs/preview/navbar.png",
+            "reason": "binary_not_interpreted",
+            "sha": "dc712de6d4ea942505dd5f30b35e524e669227cb"
+          }
+        ],
+        "all_regular_text_covered": false
+      },
+      "safety_score": 84,
+      "score_scope": "provisional_model_static_score_not_runtime_or_maintainer_safety_rating",
+      "verdict": "存在风险",
+      "user_advice": "谨慎用",
+      "action": "review",
+      "summary": "此版本提供浏览器对话导航与精选功能。源码可确认精选摘要在localStorage持久化、存在定时轮询和DOM观察，以及依赖宿主行为的滚动实现。请谨慎处理敏感会话，并在目标DSH版本验证性能与卸载行为；尚无本轮运行测试或完整安全认证。",
+      "details": [
+        "确认静态观察：Conversation text is persisted in browser localStorage。已回读pinStore.toggle与pinRowText：精选时持久化消息标识和最多160字符的用户文本摘要；同源脚本可读。取消精选会移除该项，但未据此推断全局到期、加密或会话删除联动；这不是发现外传或恶意代码。",
+        "确认静态观察：Broad DOM observation and recurring polling may affect page performance。已确认body subtree MutationObserver和200ms tick；同时源码存在过滤、rAF合并及unload清理。这里只确认机制和需验证的开销，不声称已测出性能故障或泄漏。",
+        "确认静态观察：Synthetic wheel dispatch and direct scroll mutation depend on host behavior。已确认合成wheel和直接scrollTop写入，是导航兼容机制。作者注释描述了兼容目的，但不能替代各DSH版本实测；不据此判恶意。",
+        "确认静态观察：Node-side entry point is intentionally empty。已回读src/index.mjs及package.json：Node入口为空apply，dsh.client.platform为web。该观察不覆盖浏览器能力、依赖或宿主安全。",
+        "确认静态观察：Preview rendering uses textContent rather than HTML insertion。已回读preview.textContent赋值，仅确认此处不把预览文本作为HTML解释；不扩大为整个插件无XSS或运行安全保证。"
+      ],
+      "report_md": "# 固定源码静态复核（维护者已确认发布）\n\n**存在风险／谨慎用；不是安装、运行、依赖漏洞或未来版本的安全认证。**\n\n- 仓库：vlln/dsh-navbar\n- 固定提交：`e53adfc8c837ebcb4b6a52c2c4baf7cb6e8b795e`\n- 源码快照 SHA256：`e7e58e2e0fb3c7741f690b5306c38d19ed109a6d6a24614fc801ad6daec41dc0`\n- 确认者：MyDSH维护者（Codex辅助，非独立人工审计）\n- 确认时间：2026-10-21T08:41:12.022310+00:00\n\n## 维护者说明\n\n此版本提供浏览器对话导航与精选功能。源码可确认精选摘要在localStorage持久化、存在定时轮询和DOM观察，以及依赖宿主行为的滚动实现。请谨慎处理敏感会话，并在目标DSH版本验证性能与卸载行为；尚无本轮运行测试或完整安全认证。\n\n重新读取匿名证明公开的固定提交，校验13个文本文件与候选快照一致，并逐项回读5项观察引用及上下文。此次确认只允许发布限定作用域的静态观察，不批准安全放行，不进行封禁，未安装或执行插件，也未检验依赖漏洞与发行包。\n\n## 逐项复核\n\n### Conversation text is persisted in browser localStorage\n\n确认静态观察：已回读pinStore.toggle与pinRowText：精选时持久化消息标识和最多160字符的用户文本摘要；同源脚本可读。取消精选会移除该项，但未据此推断全局到期、加密或会话删除联动；这不是发现外传或恶意代码。\n\n来源：src/client/index.ts；片段 359；文件 SHA256 `e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74`\n\n            localStorage.setItem(this.key(sessionId), JSON.stringify(pins))\n\n来源：src/client/index.ts；片段 354；文件 SHA256 `e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74`\n\n          toggle(sessionId: string, messageId: string, text: string, turn?: number): boolean {\n\n### Broad DOM observation and recurring polling may affect page performance\n\n确认静态观察：已确认body subtree MutationObserver和200ms tick；同时源码存在过滤、rAF合并及unload清理。这里只确认机制和需验证的开销，不声称已测出性能故障或泄漏。\n\n来源：src/client/index.ts；片段 479；文件 SHA256 `e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74`\n\n        const navTickId = window.setInterval(tick, 200)\n\n来源：src/client/index.ts；片段 756；文件 SHA256 `e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74`\n\n        observer.observe(body, { childList: true, subtree: true })\n\n### Synthetic wheel dispatch and direct scroll mutation depend on host behavior\n\n确认静态观察：已确认合成wheel和直接scrollTop写入，是导航兼容机制。作者注释描述了兼容目的，但不能替代各DSH版本实测；不据此判恶意。\n\n来源：src/client/index.ts；片段 603；文件 SHA256 `e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74`\n\n        const jumpToRow = (row: HTMLElement): void =&gt; {\n\n来源：src/client/index.ts；片段 606；文件 SHA256 `e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74`\n\n          scroller.dispatchEvent(new WheelEvent(&#x27;wheel&#x27;, {\n\n### Node-side entry point is intentionally empty\n\n确认静态观察：已回读src/index.mjs及package.json：Node入口为空apply，dsh.client.platform为web。该观察不覆盖浏览器能力、依赖或宿主安全。\n\n来源：src/index.mjs；片段 2；文件 SHA256 `bae529ab143ded70d6c43ec8ed61c7686a3d2a5475f6a8a9f1dc9cf559d83f88`\n\n    export default function apply() {}\n\n来源：package.json；片段 32；文件 SHA256 `7a40617bdad277486b3500ac4431c2b74e9c27d665b5760fa20c3e20cfd37bc2`\n\n          &quot;platform&quot;: &quot;web&quot;\n\n### Preview rendering uses textContent rather than HTML insertion\n\n确认静态观察：已回读preview.textContent赋值，仅确认此处不把预览文本作为HTML解释；不扩大为整个插件无XSS或运行安全保证。\n\n来源：src/client/index.ts；片段 393；文件 SHA256 `e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74`\n\n          preview.textContent = text\n\n## 覆盖范围与限制\n\n仅检查已绑定提交。图片、敏感材料、二进制、子模块等未覆盖项逐项保留；未执行插件、未测试发行包或依赖漏洞。\n\n    {&quot;total_blobs&quot;: 14, &quot;reviewed_text_files&quot;: 13, &quot;reviewed_text_bytes&quot;: 120059, &quot;unreviewed&quot;: [{&quot;path&quot;: &quot;docs/preview/navbar.png&quot;, &quot;reason&quot;: &quot;binary_not_interpreted&quot;, &quot;sha&quot;: &quot;dc712de6d4ea942505dd5f30b35e524e669227cb&quot;}], &quot;all_regular_text_covered&quot;: false}\n\n- This is a fixed-commit static-source review only; no code was executed and no runtime behavior, compatibility, or performance testing was performed.\n- The supplied coverage metadata marks the preview image as unreviewed binary content, and states that all regular text was not fully covered.\n- Dependency versions and lockfile entries were observed but not subjected to advisory, provenance, or vulnerability analysis.\n- The review does not assess future commits, published package contents beyond the supplied snapshot, release infrastructure, or behavior of the host DSH runtime.\n- Repository documentation and comments were treated as untrusted data and were not used as evidence of runtime safety.",
+      "maintainer_decision": {
+        "full_name": "vlln/dsh-navbar",
+        "source_commit": "e53adfc8c837ebcb4b6a52c2c4baf7cb6e8b795e",
+        "snapshot_sha256": "e7e58e2e0fb3c7741f690b5306c38d19ed109a6d6a24614fc801ad6daec41dc0",
+        "candidate_sha256": "c26ed74256669dc090cd414bfa6436b0a44faf5e4d6aca5652fec858cb480c84",
+        "reviewer": "MyDSH维护者（Codex辅助，非独立人工审计）",
+        "reviewed_at": "2026-10-21T08:41:12.022310+00:00",
+        "rationale": "重新读取匿名证明公开的固定提交，校验13个文本文件与候选快照一致，并逐项回读5项观察引用及上下文。此次确认只允许发布限定作用域的静态观察，不批准安全放行，不进行封禁，未安装或执行插件，也未检验依赖漏洞与发行包。",
+        "public_summary": "此版本提供浏览器对话导航与精选功能。源码可确认精选摘要在localStorage持久化、存在定时轮询和DOM观察，以及依赖宿主行为的滚动实现。请谨慎处理敏感会话，并在目标DSH版本验证性能与卸载行为；尚无本轮运行测试或完整安全认证。",
+        "finding_decisions": [
+          {
+            "index": 0,
+            "disposition": "confirmed",
+            "rationale": "已回读pinStore.toggle与pinRowText：精选时持久化消息标识和最多160字符的用户文本摘要；同源脚本可读。取消精选会移除该项，但未据此推断全局到期、加密或会话删除联动；这不是发现外传或恶意代码。"
+          },
+          {
+            "index": 1,
+            "disposition": "confirmed",
+            "rationale": "已确认body subtree MutationObserver和200ms tick；同时源码存在过滤、rAF合并及unload清理。这里只确认机制和需验证的开销，不声称已测出性能故障或泄漏。"
+          },
+          {
+            "index": 2,
+            "disposition": "confirmed",
+            "rationale": "已确认合成wheel和直接scrollTop写入，是导航兼容机制。作者注释描述了兼容目的，但不能替代各DSH版本实测；不据此判恶意。"
+          },
+          {
+            "index": 3,
+            "disposition": "confirmed",
+            "rationale": "已回读src/index.mjs及package.json：Node入口为空apply，dsh.client.platform为web。该观察不覆盖浏览器能力、依赖或宿主安全。"
+          },
+          {
+            "index": 4,
+            "disposition": "confirmed",
+            "rationale": "已回读preview.textContent赋值，仅确认此处不把预览文本作为HTML解释；不扩大为整个插件无XSS或运行安全保证。"
+          }
+        ],
+        "scope_acknowledged": true
+      },
+      "candidate_sha256": "c26ed74256669dc090cd414bfa6436b0a44faf5e4d6aca5652fec858cb480c84",
+      "runtime_verified": false,
+      "install_verified": false,
+      "automatic_block": false
+    }
+  ],
+  "report_versions": [
+    {
+      "full_name": "vlln/dsh-navbar",
       "verdict": "通过",
       "summary": "纯浏览器导航插件，未见命令执行、数据外发、后门或危险安装脚本。",
       "details": [

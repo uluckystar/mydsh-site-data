@@ -1,0 +1,175 @@
+{
+  "candidates": [
+    {
+      "full_name": "vlln/dsh-navbar",
+      "source_commit": "e53adfc8c837ebcb4b6a52c2c4baf7cb6e8b795e",
+      "safety_score": 84,
+      "summary": "Provisional static review finds a browser-only navigation UI with no evident unrelated network, credential, shell, or filesystem abuse. It persists truncated conversation text in localStorage and uses broad DOM observation plus periodic polling, creating privacy and performance considerations. Coverage excludes one image and does not include runtime or dependency validation.",
+      "findings": [
+        {
+          "severity": "risk",
+          "title": "Conversation text is persisted in browser localStorage",
+          "detail": "Pinning stores message identifiers and truncated conversation text under a session-derived localStorage key. This makes potentially sensitive user content available to any script running in the same origin and leaves retention, quota, clearing, and session-identifier privacy to the host environment. The reviewed code does not encrypt or expire these records.",
+          "evidence": [
+            {
+              "file": "src/client/index.ts",
+              "passage": 359,
+              "quote": "        localStorage.setItem(this.key(sessionId), JSON.stringify(pins))\n",
+              "file_sha256": "e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74"
+            },
+            {
+              "file": "src/client/index.ts",
+              "passage": 354,
+              "quote": "      toggle(sessionId: string, messageId: string, text: string, turn?: number): boolean {\n",
+              "file_sha256": "e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74"
+            }
+          ]
+        },
+        {
+          "severity": "risk",
+          "title": "Broad DOM observation and recurring polling may affect page performance",
+          "detail": "The client observes the entire document subtree and also runs a 200 ms interval that repeatedly queries the chat structure. Although callbacks contain filtering and rendering uses requestAnimationFrame, this can impose overhead on large or mutation-heavy pages and should be validated against host lifecycle and performance expectations.",
+          "evidence": [
+            {
+              "file": "src/client/index.ts",
+              "passage": 479,
+              "quote": "    const navTickId = window.setInterval(tick, 200)\n",
+              "file_sha256": "e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74"
+            },
+            {
+              "file": "src/client/index.ts",
+              "passage": 756,
+              "quote": "    observer.observe(body, { childList: true, subtree: true })\n",
+              "file_sha256": "e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74"
+            }
+          ]
+        },
+        {
+          "severity": "risk",
+          "title": "Synthetic wheel dispatch and direct scroll mutation depend on host behavior",
+          "detail": "Navigation dispatches a synthetic wheel event and then directly changes the host scroller's scrollTop. This is intended to influence host reader-input tracking, but it couples the plugin to undocumented event handling and may produce inconsistent scrolling or interaction behavior across host versions.",
+          "evidence": [
+            {
+              "file": "src/client/index.ts",
+              "passage": 603,
+              "quote": "    const jumpToRow = (row: HTMLElement): void => {\n",
+              "file_sha256": "e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74"
+            },
+            {
+              "file": "src/client/index.ts",
+              "passage": 606,
+              "quote": "      scroller.dispatchEvent(new WheelEvent('wheel', {\n",
+              "file_sha256": "e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74"
+            }
+          ]
+        },
+        {
+          "severity": "info",
+          "title": "Node-side entry point is intentionally empty",
+          "detail": "The Node half exports an empty apply function, while the package metadata identifies the client as a web platform component. This limits the reviewed plugin's direct server-side behavior in the supplied source.",
+          "evidence": [
+            {
+              "file": "src/index.mjs",
+              "passage": 2,
+              "quote": "export default function apply() {}\n",
+              "file_sha256": "bae529ab143ded70d6c43ec8ed61c7686a3d2a5475f6a8a9f1dc9cf559d83f88"
+            },
+            {
+              "file": "package.json",
+              "passage": 32,
+              "quote": "      \"platform\": \"web\"\n",
+              "file_sha256": "7a40617bdad277486b3500ac4431c2b74e9c27d665b5760fa20c3e20cfd37bc2"
+            }
+          ]
+        },
+        {
+          "severity": "info",
+          "title": "Preview rendering uses textContent rather than HTML insertion",
+          "detail": "Conversation previews are assigned through textContent, which avoids interpreting message text as markup in the preview element. This is a positive containment property for the displayed conversation content.",
+          "evidence": [
+            {
+              "file": "src/client/index.ts",
+              "passage": 393,
+              "quote": "      preview.textContent = text\n",
+              "file_sha256": "e9a3dc60e100bb4364c81ac07116e30a57000237c9a6217333a6639f8a97ca74"
+            }
+          ]
+        }
+      ],
+      "limitations": [
+        "This is a fixed-commit static-source review only; no code was executed and no runtime behavior, compatibility, or performance testing was performed.",
+        "The supplied coverage metadata marks the preview image as unreviewed binary content, and states that all regular text was not fully covered.",
+        "Dependency versions and lockfile entries were observed but not subjected to advisory, provenance, or vulnerability analysis.",
+        "The review does not assess future commits, published package contents beyond the supplied snapshot, release infrastructure, or behavior of the host DSH runtime.",
+        "Repository documentation and comments were treated as untrusted data and were not used as evidence of runtime safety."
+      ],
+      "snapshot_sha256": "e7e58e2e0fb3c7741f690b5306c38d19ed109a6d6a24614fc801ad6daec41dc0",
+      "coverage": {
+        "total_blobs": 14,
+        "reviewed_text_files": 13,
+        "reviewed_text_bytes": 120059,
+        "unreviewed": [
+          {
+            "path": "docs/preview/navbar.png",
+            "reason": "binary_not_interpreted",
+            "sha": "dc712de6d4ea942505dd5f30b35e524e669227cb"
+          }
+        ],
+        "all_regular_text_covered": false
+      },
+      "branch": "main",
+      "updated_at": "2026-09-10T06:24:36Z",
+      "scope": "fixed-commit static source only; no tools, execution, install, dependency advisory or runtime certification",
+      "review_status": "awaiting_maintainer",
+      "approved": false,
+      "automatic_block": false,
+      "reviewed_at": "2026-10-21T07:53:20.103580+00:00",
+      "candidate_id": "170603eb77132ac0e91f7b021496b02860a02435259b35c01cc007a28aa88018",
+      "submitted_at": "2026-08-17T11:29:07.112Z"
+    }
+  ],
+  "maintainer_decisions": [
+    {
+      "report_id": "35eb0756d7f034cd3a472267c05a6fd1148d3f1576b248968040b14c79193f19",
+      "candidate_id": "170603eb77132ac0e91f7b021496b02860a02435259b35c01cc007a28aa88018",
+      "decision": {
+        "full_name": "vlln/dsh-navbar",
+        "source_commit": "e53adfc8c837ebcb4b6a52c2c4baf7cb6e8b795e",
+        "snapshot_sha256": "e7e58e2e0fb3c7741f690b5306c38d19ed109a6d6a24614fc801ad6daec41dc0",
+        "candidate_sha256": "c26ed74256669dc090cd414bfa6436b0a44faf5e4d6aca5652fec858cb480c84",
+        "reviewer": "MyDSH维护者（Codex辅助，非独立人工审计）",
+        "reviewed_at": "2026-10-21T08:41:12.022310+00:00",
+        "rationale": "重新读取匿名证明公开的固定提交，校验13个文本文件与候选快照一致，并逐项回读5项观察引用及上下文。此次确认只允许发布限定作用域的静态观察，不批准安全放行，不进行封禁，未安装或执行插件，也未检验依赖漏洞与发行包。",
+        "public_summary": "此版本提供浏览器对话导航与精选功能。源码可确认精选摘要在localStorage持久化、存在定时轮询和DOM观察，以及依赖宿主行为的滚动实现。请谨慎处理敏感会话，并在目标DSH版本验证性能与卸载行为；尚无本轮运行测试或完整安全认证。",
+        "finding_decisions": [
+          {
+            "index": 0,
+            "disposition": "confirmed",
+            "rationale": "已回读pinStore.toggle与pinRowText：精选时持久化消息标识和最多160字符的用户文本摘要；同源脚本可读。取消精选会移除该项，但未据此推断全局到期、加密或会话删除联动；这不是发现外传或恶意代码。"
+          },
+          {
+            "index": 1,
+            "disposition": "confirmed",
+            "rationale": "已确认body subtree MutationObserver和200ms tick；同时源码存在过滤、rAF合并及unload清理。这里只确认机制和需验证的开销，不声称已测出性能故障或泄漏。"
+          },
+          {
+            "index": 2,
+            "disposition": "confirmed",
+            "rationale": "已确认合成wheel和直接scrollTop写入，是导航兼容机制。作者注释描述了兼容目的，但不能替代各DSH版本实测；不据此判恶意。"
+          },
+          {
+            "index": 3,
+            "disposition": "confirmed",
+            "rationale": "已回读src/index.mjs及package.json：Node入口为空apply，dsh.client.platform为web。该观察不覆盖浏览器能力、依赖或宿主安全。"
+          },
+          {
+            "index": 4,
+            "disposition": "confirmed",
+            "rationale": "已回读preview.textContent赋值，仅确认此处不把预览文本作为HTML解释；不扩大为整个插件无XSS或运行安全保证。"
+          }
+        ],
+        "scope_acknowledged": true
+      }
+    }
+  ]
+}
