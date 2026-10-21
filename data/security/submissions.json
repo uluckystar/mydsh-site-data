@@ -34,7 +34,7 @@
       "last_review_attempt_at": "2026-08-18T13:41:07.737427+00:00",
       "last_review_error": null,
       "reviewed_at": "2026-10-21T08:41:12.022310+00:00",
-      "review_mail_status": "pending_maintainer_report",
+      "review_mail_status": "report_mail_sending",
       "review_mail_sent_at": "2026-08-18T13:51:07+00:00",
       "review_mail_id": "vlln/dsh-navbar|2026-08-18T13:51:00.352830+00:00",
       "safety_score": 92,
@@ -43,7 +43,12 @@
       "review_candidate_id": "170603eb77132ac0e91f7b021496b02860a02435259b35c01cc007a28aa88018",
       "review_candidate_status": "maintainer_confirmed_static_source",
       "review_source_commit": "e53adfc8c837ebcb4b6a52c2c4baf7cb6e8b795e",
-      "review_snapshot_sha256": "e7e58e2e0fb3c7741f690b5306c38d19ed109a6d6a24614fc801ad6daec41dc0"
+      "review_snapshot_sha256": "e7e58e2e0fb3c7741f690b5306c38d19ed109a6d6a24614fc801ad6daec41dc0",
+      "review_mail_notification_id": "16bdb031def9a8209f942db85d7b0598fec43aa6cf87abd1cd3bc1a8a4c32ce0",
+      "review_mail_attempt_id": "3467c8c605064599b85320ef00e428cd",
+      "review_mail_payload_sha256": "58f686a22c617185b2b932b073c24938630ff36330b883179b85f011eabed6ca",
+      "review_mail_recipient_sha256": "f78500ca331c14673009d4d67278dd7fadaeeb25aa91569dfdaddadb07649eee",
+      "review_mail_started_at": "2026-10-21T09:40:24.315534+00:00"
     }
   ]
 }
